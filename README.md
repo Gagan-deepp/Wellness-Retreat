@@ -29,6 +29,7 @@ Create a responsive web page for a fictional **Wellness Retreat platform**. The 
                 colors: {
                     'blue': '#1b3252',
                     'bg': '#e0d9ce',
+                    'grey' : '#f0f0f0',
                 },
             },
         },
