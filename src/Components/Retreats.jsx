@@ -8,6 +8,7 @@ const Retreats = () => {
   const [page, setPage] = useState(1);
   const URL = `https://669f704cb132e2c136fdd9a0.mockapi.io/api/v1/retreats?page=${page}&limit=3`;
 
+  //Fetching initial retreats and storing in store
   useEffect(() => {
     fetch(URL).then(res => res.json()).then(data => setRetreats(data)).catch(err => console.log(err));
     // eslint-disable-next-line
@@ -23,20 +24,20 @@ const Retreats = () => {
           const month = date.toLocaleString('default', { month: 'long' });
 
           const formatDate = `${month} ${date.getDate()}-${date.getDate() + retreat.duration} ${date.getFullYear()}`
-          console.log(retreat)
           return <div className='bg-bg p-4 rounded-md flex flex-col gap-4' key={retreat?.id}  >
-            <div className='w-1/2 h-24 rounded-md' >
+            <div className='w-full sm:w-1/2 h-52 sm:h-36 rounded-md' >
               <img src={retreat?.image} alt="retreat_bg" className='w-full h-full object-cover rounded-md' />
             </div>
 
             <div>
-              <h3 className='font-semibold text-base' > {retreat?.title} </h3>
-
-              <div className='mt-2 text-xs flex flex-col gap-2'>
-                <p className='' > {retreat?.description} </p>
+              <div>
+                <h3 className='font-semibold text-xl sm:text-base' > {retreat?.title} </h3>
+                <p className='sm:text-sm' > {retreat?.description} </p>
+              </div>
+              <div className='mt-2 text-base sm:text-xs flex flex-col sm:gap-2'>
                 <p> Date : {formatDate} </p>
                 <p> Location : {retreat.location} </p>
-                <p> Price : {retreat.price} </p>
+                <p className='font-semibold sm:font-normal' > Price : ${retreat.price} </p>
               </div>
             </div>
 

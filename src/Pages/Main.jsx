@@ -4,31 +4,66 @@ import Retreats from '../Components/Retreats'
 import Search from '../Components/Search'
 import { useEffect, useState } from 'react'
 import useStore from '../zustand/Store'
+import { location, types } from '../Constants/data'
 
 const Main = () => {
+  const URL = "https://669f704cb132e2c136fdd9a0.mockapi.io/api/v1/retreats"
   const setRetreats = useStore((state) => state.setRetreats)
   const [selectType, setSelectType] = useState("");
-  const [selectDate, setSelectDate] = useState("");
-  const [seacrh, setSearch] = useState("");
-  const location = [{ value: "", label: "Filter By Location" }, { value: "Goa", label: "Goa" }, { value: "Rishikesh", label: "Rishikesh" }, { value: "Mumbai", label: "Mumbai" }, { value: "Kerala", label: "Kerala" }]
-  const types = [{ value: "", label: "Filter By Type" }, { value: "Detox", label: "Detox" }, { value: "Mental Wellness", label: "Mental Wellness" },]
+  const [selectLocation, setSelectLocation] = useState("");
 
+  // Search Functions
+  const handleSearch = async (value) => {
+    try {
+      let data;
+      if (value === "") {
+        const res = await fetch(`${URL}?page=1&limit=3`);
+        data = await res.json();
+      } else {
+        const res = await fetch(`${URL}?search=${value.replaceAll(" ", "%20")}`);
+        data = await res.json();
+      }
+      if (data !== "Not found") {
+        setRetreats(data);
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
+  //Function to handle filter
   useEffect(() => {
 
-    //Function to handle filter
-    const handleFilter = async () => {
-      const res = await fetch(`https://669f704cb132e2c136fdd9a0.mockapi.io/api/v1/retreats?filter=${selectType.replace(" ", "%20")}`);
-      const data = await res.json();
-      console.log(data)
-      setRetreats(data); // Setting global data using setRetreats function from store
+    //Function for handling type filter
+    const handleFilterType = async () => {
+      try {
+        const res = await fetch(`${URL}?filter=${selectType.replaceAll(" ", "%20")}`);
+        const data = await res.json();
+        setRetreats(data); // Setting global data using setRetreats function from store
+      } catch (error) {
+        console.log(error)
+      }
     }
 
-    if (selectDate != "" || selectType != "") {
-      handleFilter()
+    // Function for handling location filter
+    const handleFilterLocation = async () => {
+      try {
+        const res = await fetch(`${URL}?location=${selectLocation}`);
+        const data = await res.json();
+        setRetreats(data);
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    if (selectType !== "") {
+      handleFilterType()
+    }
+    if (selectLocation !== "") {
+      handleFilterLocation()
     }
     // eslint-disable-next-line
-  }, [selectDate, selectType])
+  }, [selectLocation, selectType])
 
   return (
     <div className='wrapper flex flex-col gap-7' >
@@ -37,12 +72,12 @@ const Main = () => {
       <Hero />
 
       {/* Filter and Search Buttons */}
-      <div className='flex justify-between' >
-        <div className='flex gap-4' >
-          <Filter select={selectDate} setSelect={setSelectDate} options={location} />
+      <div className='flex justify-between flex-col gap-4 sm:flex-row' >
+        <div className='flex gap-4 flex-col sm:flex-row' >
+          <Filter select={selectLocation} setSelect={setSelectLocation} options={location} />
           <Filter select={selectType} setSelect={setSelectType} options={types} />
         </div>
-        <Search seacrh={seacrh} setSearch={setSearch} />
+        <Search handleSearch={handleSearch} />
       </div>
 
       {/* Retreats */}
