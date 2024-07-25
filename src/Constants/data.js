@@ -1,6 +1,5 @@
 export const location = [
     { value: "", label: "Filter By Location" },
-    { value: "Goa", label: "Goa" },
     { value: "Rishikesh", label: "Rishikesh" },
     { value: "Mumbai", label: "Mumbai" },
     { value: "Kerala", label: "Kerala" }
